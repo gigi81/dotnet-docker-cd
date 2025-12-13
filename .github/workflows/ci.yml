@@ -17,7 +17,7 @@ jobs:
       matrix:
         arch: [amd64, arm64]
     env:
-      IMAGE: grillisoft/gicd-service:${{ github.sha }}
+      IMAGE: ${{ github.repository_owner }}/gicd:${{ github.sha }}
 
     steps:
       - name: Checkout repository
@@ -56,12 +56,12 @@ jobs:
           context: .
           file: src/Grillisoft.Gicd.Service/Dockerfile
           platforms: linux/${{ matrix.arch }}
-          tags: $IMAGE-linux-${{ matrix.arch }}
+          tags: ${{ env.IMAGE }}-linux-${{ matrix.arch }}
           load: true
 
       - name: Save Docker image to tar
         run: |
-          docker save $IMAGE-linux-${{ matrix.arch }} -o docker-image-${{ matrix.arch }}.tar
+          docker save ${{ env.IMAGE }}-linux-${{ matrix.arch }} -o docker-image-${{ matrix.arch }}.tar
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
