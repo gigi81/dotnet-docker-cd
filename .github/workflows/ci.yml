@@ -60,16 +60,6 @@ jobs:
           tags: ${{ env.IMAGE }}-linux-${{ matrix.arch }}
           load: true
 
-      - name: Save Docker image to tar
-        run: |
-          docker save ${{ env.IMAGE }}-linux-${{ matrix.arch }} -o docker-image-${{ matrix.arch }}.tar
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image-${{ matrix.arch }}
-          path: docker-image-${{ matrix.arch }}.tar
-
   publish:
     needs: build
     runs-on: ubuntu-latest
