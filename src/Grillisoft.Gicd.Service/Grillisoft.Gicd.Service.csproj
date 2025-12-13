@@ -12,9 +12,4 @@
     <ProjectReference Include="..\Grillisoft.Gicd\Grillisoft.Gicd.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <PublishProfile>DefaultContainer</PublishProfile>
-    <ContainerRepository>gicd</ContainerRepository>
-    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
-  </PropertyGroup>
 </Project>
