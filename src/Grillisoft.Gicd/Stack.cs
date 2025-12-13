@@ -33,6 +33,8 @@ public class Stack : IStack
     
     public Task Deploy(IDirectoryInfo directory, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Deploying stack {StackName}", directory.Name);
+        
         var dockerFile = directory.File("docker-compose.yml");
 
         var config = new DockerComposeConfig

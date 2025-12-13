@@ -120,11 +120,14 @@ public class Repository : IRepository
     
     async Task Git(string args, IDirectoryInfo directory, CancellationToken cancellationToken)
     {
-        await Cli.Wrap("git")
+        var result = await Cli.Wrap("git")
             .WithArguments(args)
             .WithWorkingDirectory(directory.FullName)
             .WithStandardErrorPipe(PipeTarget.ToDelegate(s => _logger.LogError(s)))
             .WithStandardOutputPipe(PipeTarget.ToDelegate(s => _logger.LogInformation(s)))
             .ExecuteAsync(cancellationToken);
+        
+        if(!result.IsSuccess)
+            throw new Exception($"git failed with exit code {result.ExitCode}");
     }
 }

@@ -8,17 +8,20 @@ public class DeployManager
 {
     private readonly IRepository _repository;
     private readonly IStack _stack;
+    private readonly IDecryption _decryption;
     private readonly IFileSystem _fileSystem;
     private readonly ILogger<DeployManager> _logger;
 
     public DeployManager(
         IRepository repository,
         IStack stack,
+        IDecryption decryption,
         IFileSystem fileSystem,
         ILogger<DeployManager> logger)
     {
         _repository = repository;
         _stack = stack;
+        _decryption = decryption;
         _fileSystem = fileSystem;
         _logger = logger;
     }
@@ -37,7 +40,7 @@ public class DeployManager
 
         foreach (var stackDirectory in repoDirectory.SubDirectory("stacks").GetDirectories())
         {
-            _logger.LogInformation("Deploying stack {StackName}", stackDirectory.Name);
+            await _decryption.Decrypt(stackDirectory, cancellationToken);
             await _stack.Deploy(stackDirectory, cancellationToken);
         }
     }
