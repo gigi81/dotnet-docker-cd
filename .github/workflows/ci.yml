@@ -51,12 +51,13 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build Docker image for platform
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            -f src/Grillisoft.Gicd.Service/Dockerfile \
-            -t $IMAGE-linux-${{ matrix.arch }} \
-            --load .
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/Grillisoft.Gicd.Service/Dockerfile
+          platforms: linux/${{ matrix.arch }}
+          tags: $IMAGE-linux-${{ matrix.arch }}
+          load: true
 
       - name: Save Docker image to tar
         run: |

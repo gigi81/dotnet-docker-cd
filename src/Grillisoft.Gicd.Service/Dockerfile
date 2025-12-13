@@ -4,6 +4,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /build
 
+RUN apt-get update && apt-get install -y git sops
+
 # Copy solution and common MSBuild props to leverage layer caching
 COPY *.slnx ./
 COPY *.props ./
