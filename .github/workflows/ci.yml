@@ -6,9 +6,10 @@ permissions:
 
 on:
   push:
-    branches: main
+    branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
-    branches: main
+    branches: [ main ]
 
 jobs:
   build:
@@ -59,12 +60,23 @@ jobs:
           tags: ${{ env.IMAGE }}-linux-${{ matrix.arch }}
           load: true
 
+      - name: Save Docker image to tar
+        run: |
+          docker save ${{ env.IMAGE }}-linux-${{ matrix.arch }} -o docker-image-${{ matrix.arch }}.tar
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-${{ matrix.arch }}
+          path: docker-image-${{ matrix.arch }}.tar
+
   publish:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
+    # only publish when the push is a tag that starts with 'v' (e.g. v1.0)
+    if: startsWith(github.ref, 'refs/tags/v')
     env:
-      IMAGE: ghcr.io/${{ github.repository_owner }}/gicd-service:${{ github.sha }}
+      IMAGE: ghcr.io/${{ github.repository_owner }}/gicd:${{ github.ref_name }}
 
     steps:
       - name: Checkout repository
