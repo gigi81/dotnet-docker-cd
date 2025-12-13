@@ -2,6 +2,8 @@
   <PropertyGroup>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -12,6 +14,5 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 </Project>

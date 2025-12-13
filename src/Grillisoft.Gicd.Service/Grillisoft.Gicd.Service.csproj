@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <IsPackable>true</IsPackable>
+    <IsPublishable>true</IsPublishable>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,4 +12,10 @@
     <ProjectReference Include="..\Grillisoft.Gicd\Grillisoft.Gicd.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PublishProfile>DefaultContainer</PublishProfile>
+    <ContainerRepository>gicd</ContainerRepository>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
+    <ContainerRunCommand>apt-get update &amp;&amp; apt-get install -y git &amp;&amp; rm -rf /var/lib/apt/lists/*</ContainerRunCommand>
+  </PropertyGroup>
 </Project>
