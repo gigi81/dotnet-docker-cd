@@ -12,6 +12,8 @@
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
+    <Project Path="src/Grillisoft.Gicd.Abstractions/Grillisoft.Gicd.Abstractions.csproj" />
+    <Project Path="src/Grillisoft.Gicd.Service/Grillisoft.Gicd.Service.csproj" />
     <Project Path="src/Grillisoft.Gicd/Grillisoft.Gicd.csproj" />
   </Folder>
   <Folder Name="/tests/">
