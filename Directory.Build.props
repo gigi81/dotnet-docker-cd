@@ -12,5 +12,6 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <PackageLicenseExpression></PackageLicenseExpression>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 </Project>
