@@ -60,16 +60,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish container with dotnet (platform-specific)
-        env:
-          IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
-          IMAGE_NAME: gicd
         run: |
           echo "Publishing container for platform: ${{ matrix.arch }}"
           dotnet publish src/Grillisoft.Gicd.Service/Grillisoft.Gicd.Service.csproj -c Release \
             /t:PublishContainer \
             /p:ContainerBaseImage=ghcr.io/${{ github.repository_owner }}/gicd-base:latest \
-            /p:ContainerRegistry=${IMAGE_REGISTRY} \
-            /p:ContainerImageName=${IMAGE_NAME} \
+            /p:ContainerRegistry=ghcr.io \
+            /p:ContainerRepository=${{ github.repository_owner }}/gicd \
             /p:ContainerImageTag=${{ github.sha }}-${{ matrix.arch }} \
             --os linux --arch ${{ matrix.arch }}
 
