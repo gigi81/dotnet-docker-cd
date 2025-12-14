@@ -2,8 +2,7 @@ name: Base Image
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    tags: [ 'base-v*' ]
   workflow_dispatch: {}
 
 permissions:

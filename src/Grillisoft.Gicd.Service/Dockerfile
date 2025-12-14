@@ -20,13 +20,15 @@ ENV DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
 # Restore packages using BuildKit cache mounts for NuGet. Requires BuildKit (docker buildx) to be effective.
 RUN --mount=type=cache,target=/root/.nuget/packages \
     --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
-    dotnet restore --use-current-runtime
+    bash -c "mkdir -p /root/.nuget/NuGetFallbackFolder /root/.nuget/packages && chmod -R 0777 /root/.nuget || true; | \
+    dotnet restore --use-current-runtime"
 
 # Copy everything and publish
 WORKDIR /build/src/Grillisoft.Gicd.Service
 RUN --mount=type=cache,target=/root/.nuget/packages \
     --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
-    dotnet publish -c Release -o /app/publish --no-restore
+    bash -c "mkdir -p /root/.nuget/NuGetFallbackFolder /root/.nuget/packages && chmod -R 0777 /root/.nuget || true; | \
+    dotnet publish -c Release -o /app/publish --no-restore"
 
 # Build runtime image
 FROM ghcr.io/gigi81/gicd-base:latest AS runtime
@@ -40,5 +42,3 @@ ENV DOTNET_ENVIRONMENT=Production
 
 EXPOSE 80
 ENTRYPOINT ["dotnet", "gicd.dll"]
-
-
