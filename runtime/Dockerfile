@@ -23,6 +23,8 @@ EOF
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
+# Re-declare the ARG inside the stage so it's available to RUN instructions
+ARG SOPS_VERSION
 RUN set -eux; \
     ARCH="$(uname -m)"; \
     case "$ARCH" in \
