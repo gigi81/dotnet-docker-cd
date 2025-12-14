@@ -17,18 +17,18 @@ ENV DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
     DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     NUGET_PACKAGES=/root/.nuget/packages
 
+RUN bash -c "mkdir -p /root/.nuget/NuGetFallbackFolder /root/.nuget/packages && chmod -R 0777 /root/.nuget || true;"
+
 # Restore packages using BuildKit cache mounts for NuGet. Requires BuildKit (docker buildx) to be effective.
 RUN --mount=type=cache,target=/root/.nuget/packages \
     --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
-    bash -c "mkdir -p /root/.nuget/NuGetFallbackFolder /root/.nuget/packages && chmod -R 0777 /root/.nuget || true; | \
-    dotnet restore --use-current-runtime"
+    dotnet restore --use-current-runtime
 
-# Copy everything and publish
-WORKDIR /build/src/Grillisoft.Gicd.Service
+# Publish the service (use same cache mount to speed up package resolution)
+WORKDIR /src/src/Grillisoft.Gicd.Service
 RUN --mount=type=cache,target=/root/.nuget/packages \
     --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
-    bash -c "mkdir -p /root/.nuget/NuGetFallbackFolder /root/.nuget/packages && chmod -R 0777 /root/.nuget || true; | \
-    dotnet publish -c Release -o /app/publish --no-restore"
+    dotnet publish -c Release -o /app/publish --no-restore
 
 # Build runtime image
 FROM ghcr.io/gigi81/gicd-base:latest AS runtime
