@@ -29,6 +29,9 @@ public class DeployManager
 
     public async Task Execute(CancellationToken cancellationToken)
     {
+        var stopwatch = Stopwatch.StartNew();
+        _logger.LogInformation("Starting deploy manager...");
+
         try
         {
             await ExecuteInternal(cancellationToken);
@@ -37,30 +40,40 @@ public class DeployManager
         {
             _logger.LogError(ex, "An exception occurred during deployment: {Message}", ex.Message);
         }
+        
+        _logger.LogInformation("Deploy manager finished in {Elapsed}", stopwatch.Elapsed);
     }
 
     private async Task ExecuteInternal(CancellationToken cancellationToken)
     {
-        var stopwatch = Stopwatch.StartNew();
-        _logger.LogInformation("Starting deploy manager...");
-        
         var repoDirectory = _fileSystem.CurrentDirectory().SubDirectory("repo");
 
         if (!await _repository.Poll(cancellationToken))
         {
             _logger.LogInformation("No changes detected in the repository. Deployment skipped.");
+            return;
         }
-        else
-        {
-            await _repository.Pull(repoDirectory, cancellationToken);
 
-            foreach (var stackDirectory in repoDirectory.SubDirectory("stacks").GetDirectories())
-            {
-                await _decryption.Decrypt(stackDirectory, cancellationToken);
-                await _stack.Deploy(stackDirectory, cancellationToken);
-            }
+        await _repository.Pull(repoDirectory, cancellationToken);
+
+        var stacksDirectory = repoDirectory.SubDirectory("stacks");
+        if(!stacksDirectory.Exists)
+        {
+            _logger.LogError("Stacks directory does not exist in the repo");
+            return;
+        }
+
+        var stacks = stacksDirectory.GetDirectories();
+        if (stacks.Length <= 0)
+        {
+            _logger.LogError("Stacks directory is empty in the repo");
+            return;
         }
         
-        _logger.LogInformation("Deploy manager finished in {Elapsed}", stopwatch.Elapsed);
+        foreach (var stack in stacks)
+        {
+            await _decryption.Decrypt(stack, cancellationToken);
+            await _stack.Deploy(stack, cancellationToken);
+        }
     }
 }
