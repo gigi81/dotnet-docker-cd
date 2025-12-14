@@ -17,10 +17,10 @@ public class Stack : IStack
     public async Task Deploy(IDirectoryInfo directory, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Pulling stack {StackName}", directory.Name);
-        await DockerCompose(directory, "pull --policy always", cancellationToken);
+        await DockerCompose(directory, "compose pull --policy always", cancellationToken);
         
         _logger.LogInformation("Deploying stack {StackName}", directory.Name);
-        await DockerCompose(directory, "up -d", cancellationToken);
+        await DockerCompose(directory, "compose up -d", cancellationToken);
         
         _logger.LogInformation("Completed stack {StackName} deployment", directory.Name);
     }
@@ -28,7 +28,7 @@ public class Stack : IStack
     async Task DockerCompose(IDirectoryInfo directory, string args, CancellationToken cancellationToken)
     {
         var result = await Cli.Wrap("docker")
-            .WithArguments($"compose {args}")
+            .WithArguments(args)
             .WithWorkingDirectory(directory.FullName)
             .WithStandardErrorPipe(PipeTarget.ToDelegate(s => _logger.LogError(s)))
             .WithStandardOutputPipe(PipeTarget.ToDelegate(s => _logger.LogInformation(s)))
