@@ -24,7 +24,20 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # Install git, curl & ca-certificates to download sops in runtime image, then clean up
-RUN apt-get update && apt-get install -y git curl ca-certificates \
+RUN apt update && apt install -y git curl ca-certificates 
+
+RUN install -m 0755 -d /etc/apt/keyrings
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+RUN chmod a+r /etc/apt/keyrings/docker.asc
+RUN tee /etc/apt/sources.list.d/docker.sources <<EOF \
+    Types: deb \
+    URIs: https://download.docker.com/linux/ubuntu \
+    Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") \
+    Components: stable \
+    Signed-By: /etc/apt/keyrings/docker.asc \
+    EOF
+
+RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
 ARG SOPS_VERSION=3.11.0
