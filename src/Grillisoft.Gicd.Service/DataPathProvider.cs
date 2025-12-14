@@ -26,14 +26,26 @@ public class DataPathProvider : IDataPathProvider
         //get docker mount point for dataPath
         var mountPoint = await GetMountPointByDestination(dataPath);
         if (mountPoint.Equals(dataPath))
-            return mountPoint;
+            return _path = mountPoint;
         
         var mountPointInfo = _fileSystem.DirectoryInfo.New(mountPoint);
-        
+
+        if (mountPointInfo.Exists)
+        {
+            //check if mountPointInfo is a symbolic link
+            if (mountPointInfo.LinkTarget is dataPath)
+            {
+                _logger.LogInformation("Symbolic link from {MountPoint} to {DataPath} already exists", mountPoint, dataPath);
+                return _path = mountPoint;
+            }
+            
+            throw new InvalidOperationException($"Symbolic link from {mountPoint} already exists but its not pointing to {dataPath}");
+        }
+
         _logger.LogInformation("Creating symbolic link from {MountPoint} to {DataPath}", mountPoint, dataPath);
         mountPointInfo.Parent?.Create();
         mountPointInfo.CreateAsSymbolicLink(dataPath);
-        
+
         return _path = mountPoint;
     }
 
