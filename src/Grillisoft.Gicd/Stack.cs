@@ -34,8 +34,19 @@ public class Stack : IStack
     public Task Deploy(IDirectoryInfo directory, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deploying stack {StackName}", directory.Name);
+
+        var files = new[]
+        {
+            directory.File("docker-compose.yml"),
+            directory.File("docker-compose.yaml")
+        };
         
-        var dockerFile = directory.File("docker-compose.yml");
+        var dockerFile = files.FirstOrDefault(x => x.Exists);
+        if (dockerFile == null)
+        {
+            _logger.LogError("Docker file not found for stack {StackName}", directory.Name);
+            return Task.CompletedTask;
+        }
 
         var config = new DockerComposeConfig
         {

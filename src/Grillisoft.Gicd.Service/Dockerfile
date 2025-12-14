@@ -13,7 +13,8 @@ COPY src ./src
 COPY tests ./tests
 
 # Restore packages
-RUN dotnet restore --use-current-runtime
+RUN --mount=type=cache,target=/nugetcache \
+    dotnet restore --packages /nugetcache --use-current-runtime
 
 # Copy everything and publish
 WORKDIR /build/src/Grillisoft.Gicd.Service

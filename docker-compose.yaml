@@ -7,5 +7,7 @@ services:
       GICD_GITHUB__TOKEN: your_github_token_here
       GICD_GITHUB__OWNER: gigi81
       GICD_GITHUB__REPOSITORY: vps-cd
+      SOPS_AGE_KEY_FILE: /sops_age_key.txt
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./sops_age_key.txt:/sops_age_key.txt:ro

@@ -33,7 +33,7 @@ public class SopsDecrypt : IDecryption
     async Task SopsDecryptFile(IFileInfo file, CancellationToken cancellationToken)
     {
         var result = await Cli.Wrap("sops")
-            .WithArguments($"-d \"{file.Name}\" --output \"{file.Name}\"")
+            .WithArguments($"-d --output \"{file.Name}\" \"{file.Name}\"")
             .WithWorkingDirectory(file.Directory?.FullName ?? "")
             .WithStandardErrorPipe(PipeTarget.ToDelegate(s => _logger.LogError(s)))
             .WithStandardOutputPipe(PipeTarget.ToDelegate(s => _logger.LogInformation(s)))
