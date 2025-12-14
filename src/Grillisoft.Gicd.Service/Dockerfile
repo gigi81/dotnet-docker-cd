@@ -23,7 +23,7 @@ RUN dotnet publish -c Release -o /app/publish --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Install curl & ca-certificates to download sops in runtime image, then clean up
+# Install git, curl & ca-certificates to download sops in runtime image, then clean up
 RUN apt-get update && apt-get install -y git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,4 +45,4 @@ ENV ASPNETCORE_URLS=http://+:80
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 
 EXPOSE 80
-ENTRYPOINT ["dotnet", "Grillisoft.Gicd.Service.dll"]
+ENTRYPOINT ["dotnet", "gicd.dll"]
