@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CliWrap" Version="3.10.0" />
-    <PackageVersion Include="Ductus.FluentDocker" Version="2.85.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.1" />

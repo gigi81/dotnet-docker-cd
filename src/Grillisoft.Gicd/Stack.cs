@@ -1,7 +1,5 @@
 using System.IO.Abstractions;
-using Ductus.FluentDocker.Model.Compose;
-using Ductus.FluentDocker.Services;
-using Ductus.FluentDocker.Services.Impl;
+using CliWrap;
 using Grillisoft.Gicd.Abstractions;
 using Microsoft.Extensions.Logging;
 
@@ -16,51 +14,27 @@ public class Stack : IStack
         _logger = logger;
     }
 
-    private IHostService DockerHost
+    public async Task Deploy(IDirectoryInfo directory, CancellationToken cancellationToken)
     {
-        get
-        {
-            var hosts = new Hosts().Discover();
-            var docker = hosts.FirstOrDefault(x => x.IsNative)
-                         ?? hosts.FirstOrDefault(x => x.Name == "default");
-            
-            if(docker == null)
-                throw new InvalidOperationException("No Docker host found.");
-            
-            return docker;
-        }
+        _logger.LogInformation("Pulling stack {StackName}", directory.Name);
+        await DockerCompose(directory, "pull --policy always", cancellationToken);
+        
+        _logger.LogInformation("Deploying stack {StackName}", directory.Name);
+        await DockerCompose(directory, "up -d", cancellationToken);
+        
+        _logger.LogInformation("Completed stack {StackName} deployment", directory.Name);
     }
     
-    public Task Deploy(IDirectoryInfo directory, CancellationToken cancellationToken)
+    async Task DockerCompose(IDirectoryInfo directory, string args, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Deploying stack {StackName}", directory.Name);
-
-        var files = new[]
-        {
-            directory.File("docker-compose.yml"),
-            directory.File("docker-compose.yaml")
-        };
+        var result = await Cli.Wrap("docker")
+            .WithArguments($"compose {args}")
+            .WithWorkingDirectory(directory.FullName)
+            .WithStandardErrorPipe(PipeTarget.ToDelegate(s => _logger.LogError(s)))
+            .WithStandardOutputPipe(PipeTarget.ToDelegate(s => _logger.LogInformation(s)))
+            .ExecuteAsync(cancellationToken);
         
-        var dockerFile = files.FirstOrDefault(x => x.Exists);
-        if (dockerFile == null)
-        {
-            _logger.LogError("Docker file not found for stack {StackName}", directory.Name);
-            return Task.CompletedTask;
-        }
-
-        var config = new DockerComposeConfig
-        {
-            ComposeFilePath = [dockerFile.FullName],
-            ForceRecreate = false,
-            RemoveOrphans = true,
-            StopOnDispose = false,
-            AlwaysPull = true,
-            ProjectDirectory = directory.FullName,
-            ComposeVersion = ComposeVersion.V2
-        };
-        
-        var svc = new DockerComposeCompositeService(DockerHost, config);
-        
-        return Task.Run(() => svc.Start(), cancellationToken);
+        if(!result.IsSuccess)
+            _logger.LogError($"docker failed with exit code {result.ExitCode}");
     }
 }
