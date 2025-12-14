@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Grillisoft.Gicd.Abstractions\Grillisoft.Gicd.Abstractions.csproj" />
     <ProjectReference Include="..\Grillisoft.Gicd\Grillisoft.Gicd.csproj" />

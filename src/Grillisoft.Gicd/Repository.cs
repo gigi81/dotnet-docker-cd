@@ -45,7 +45,7 @@ public class Repository : IRepository
         }
         
         var owner = _options.Value.Owner;
-        var repository = _options.Value.RepositoryName;
+        var repository = _options.Value.Repository;
         
         // Get repository metadata to determine default branch
         var repo = await this.Client.Repository.Get(owner, repository);
@@ -84,7 +84,7 @@ public class Repository : IRepository
             directory.Create();
         
         var owner = _options.Value.Owner;
-        var repository = _options.Value.RepositoryName;
+        var repository = _options.Value.Repository;
 
         // Get repo info to determine default branch
         var repo = await this.Client.Repository.Get(owner, repository);

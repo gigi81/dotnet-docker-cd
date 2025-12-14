@@ -6,11 +6,11 @@ public class GithubOptions
     
     public string Token { get; set; } = "";
     public string Owner { get; set; } = "";
-    public string RepositoryName { get; set; } = "";
+    public string Repository { get; set; } = "";
 
     public string RemoteUrl =>
         !string.IsNullOrEmpty(Token)
-            ? $"https://x-access-token:{Token}@github.com/{Owner}/{RepositoryName}.git"
-            : $"https://github.com/{Owner}/{RepositoryName}.git";
+            ? $"https://x-access-token:{Token}@github.com/{Owner}/{Repository}.git"
+            : $"https://github.com/{Owner}/{Repository}.git";
 
 }

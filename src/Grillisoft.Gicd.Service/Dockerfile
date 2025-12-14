@@ -43,6 +43,7 @@ COPY --from=build /app/publish ./
 
 ENV ASPNETCORE_URLS=http://+:80
 ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV DOTNET_ENVIRONMENT=Production
 
 EXPOSE 80
 ENTRYPOINT ["dotnet", "gicd.dll"]
