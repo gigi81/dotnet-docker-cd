@@ -38,9 +38,12 @@ public class Repository : IRepository
 
     public async Task<bool> Poll(CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            throw new OperationCanceledException(cancellationToken);
-
+        if (string.IsNullOrWhiteSpace(_options.Value.Token))
+        {
+            _logger.LogError("Github token not specified");
+            return false;
+        }
+        
         var owner = _options.Value.Owner;
         var repository = _options.Value.RepositoryName;
         
