@@ -46,7 +46,9 @@ public class DeployManager
 
     private async Task ExecuteInternal(CancellationToken cancellationToken)
     {
-        var repoDirectory = _fileSystem.CurrentDirectory().SubDirectory("repo");
+        var repoDirectory = _fileSystem.DirectoryInfo.New("/data");
+        if(!repoDirectory.Exists)
+            repoDirectory.Create();
 
         if (!await _repository.Poll(cancellationToken))
         {
