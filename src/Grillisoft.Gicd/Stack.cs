@@ -45,6 +45,7 @@ public class Stack : IStack
             StopOnDispose = false,
             AlwaysPull = true,
             ProjectDirectory = directory.FullName,
+            ComposeVersion = ComposeVersion.V2
         };
         
         var svc = new DockerComposeCompositeService(DockerHost, config);

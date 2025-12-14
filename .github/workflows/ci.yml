@@ -59,6 +59,8 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           tags: ${{ env.IMAGE }}-linux-${{ matrix.arch }}
           load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   publish:
     needs: build
@@ -92,6 +94,8 @@ jobs:
           file: src/Grillisoft.Gicd.Service/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ${{ env.IMAGE }}
             ghcr.io/${{ github.repository_owner }}/gicd:${{ github.ref_name }}

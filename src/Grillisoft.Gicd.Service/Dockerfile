@@ -24,7 +24,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # Install git, curl & ca-certificates to download sops in runtime image, then clean up
-RUN apt update && apt install -y git curl ca-certificates 
+RUN apt update && apt install -y git curl ca-certificates
 
 RUN install -m 0755 -d /etc/apt/keyrings
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -62,3 +62,4 @@ ENV DOTNET_ENVIRONMENT=Production
 
 EXPOSE 80
 ENTRYPOINT ["dotnet", "gicd.dll"]
+
