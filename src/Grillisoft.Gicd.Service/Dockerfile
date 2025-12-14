@@ -12,8 +12,14 @@ COPY *.props ./
 COPY src ./src
 COPY tests ./tests
 
-# Restore packages
-RUN --mount=type=cache,target=~/.nuget/packages \
+# Speed up dotnet by skipping first-run work and using a known NuGet packages folder
+ENV DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 \
+    DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    NUGET_PACKAGES=/root/.nuget/packages
+
+# Restore packages using BuildKit cache mounts for NuGet. Requires BuildKit (docker buildx) to be effective.
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
     dotnet restore --use-current-runtime
 
 # Copy everything and publish
@@ -63,4 +69,5 @@ ENV DOTNET_ENVIRONMENT=Production
 
 EXPOSE 80
 ENTRYPOINT ["dotnet", "gicd.dll"]
+
 
