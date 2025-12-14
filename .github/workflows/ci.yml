@@ -94,4 +94,5 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE }}
+            ghcr.io/${{ github.repository_owner }}/gicd:${{ github.ref_name }}
             ghcr.io/${{ github.repository_owner }}/gicd:latest

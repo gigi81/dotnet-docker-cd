@@ -6,6 +6,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables("GICD_");
+
 builder.Services.AddSingleton<IRepository, Repository>();
 builder.Services.AddSingleton<IStack, Stack>();
 builder.Services.Configure<GithubOptions>(

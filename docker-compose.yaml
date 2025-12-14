@@ -1,0 +1,9 @@
+services:
+  gicd:
+    image: ghcr.io/grillisoft/gicd:latest
+    container_name: gicd
+    restart: unless-stopped
+    environment:
+      - GICD_GITHUB__TOKEN: your_github_token_here
+      - GICD_GITHUB__OWNER: gigi81
+      - GICD_GITHUB__REPOSITORY: vps-cd
