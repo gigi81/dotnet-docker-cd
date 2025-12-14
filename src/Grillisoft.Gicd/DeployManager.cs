@@ -10,6 +10,7 @@ public class DeployManager
     private readonly IRepository _repository;
     private readonly IStack _stack;
     private readonly IDecryption _decryption;
+    private readonly IDataPathProvider _dataPathProvider;
     private readonly IFileSystem _fileSystem;
     private readonly ILogger<DeployManager> _logger;
 
@@ -17,12 +18,14 @@ public class DeployManager
         IRepository repository,
         IStack stack,
         IDecryption decryption,
+        IDataPathProvider dataPathProvider,
         IFileSystem fileSystem,
         ILogger<DeployManager> logger)
     {
         _repository = repository;
         _stack = stack;
         _decryption = decryption;
+        _dataPathProvider = dataPathProvider;
         _fileSystem = fileSystem;
         _logger = logger;
     }
@@ -46,7 +49,8 @@ public class DeployManager
 
     private async Task ExecuteInternal(CancellationToken cancellationToken)
     {
-        var repoDirectory = _fileSystem.DirectoryInfo.New("/data");
+        var dataPath = await _dataPathProvider.GetDataPath();
+        var repoDirectory = _fileSystem.DirectoryInfo.New(dataPath);
         if(!repoDirectory.Exists)
             repoDirectory.Create();
 

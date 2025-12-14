@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IDecryption, SopsDecrypt>();
 builder.Services.AddSingleton<DeployManager>();
 builder.Services.AddHostedService<DeployJob>();
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
+builder.Services.AddSingleton<IDataPathProvider, DataPathProvider>();
 
 builder.Services.AddSerilog(config =>
 {
@@ -36,7 +37,5 @@ builder.Services.AddSerilog(config =>
 });
 
 var app = builder.Build();
-
 app.MapGet("/", () => "Hello World!");
-
 app.Run();
