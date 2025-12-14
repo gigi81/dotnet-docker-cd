@@ -41,9 +41,9 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args:
-            NET_VERSION: "10.0"
-            SOPS_VERSION: "3.11.0"
+          build-args: |
+            NET_VERSION=10.0
+            SOPS_VERSION=3.11.0
           tags: |
             ghcr.io/${{ github.repository_owner }}/gicd-base:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/gicd-base:latest
