@@ -24,7 +24,9 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 
 # Copy everything and publish
 WORKDIR /build/src/Grillisoft.Gicd.Service
-RUN dotnet publish -c Release -o /app/publish --no-restore
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    --mount=type=cache,target=/root/.nuget/NuGetFallbackFolder \
+    dotnet publish -c Release -o /app/publish --no-restore
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
