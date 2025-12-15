@@ -1,6 +1,8 @@
+using System.IO.Abstractions;
+
 namespace Grillisoft.Gicd.Abstractions;
 
 public interface IDataPathProvider
 {
-    Task<string> GetDataPath();
+    Task<IDirectoryInfo> GetDataPath();
 }

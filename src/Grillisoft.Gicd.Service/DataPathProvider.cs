@@ -8,7 +8,7 @@ public class DataPathProvider : IDataPathProvider
 {
     private readonly IFileSystem _fileSystem;
     private readonly ILogger<DataPathProvider> _logger;
-    private string? _path;
+    private IDirectoryInfo? _path;
 
     public DataPathProvider(IFileSystem fileSystem, ILogger<DataPathProvider> logger)
     {
@@ -16,7 +16,7 @@ public class DataPathProvider : IDataPathProvider
         _logger = logger;
     }
     
-    public async Task<string> GetDataPath()
+    public async Task<IDirectoryInfo> GetDataPath()
     {
         if(_path != null)
             return _path;
@@ -25,10 +25,10 @@ public class DataPathProvider : IDataPathProvider
         
         //get docker mount point for dataPath
         var mountPoint = await GetMountPointByDestination(dataPath);
-        if (mountPoint.Equals(dataPath))
-            return _path = mountPoint;
-        
         var mountPointInfo = _fileSystem.DirectoryInfo.New(mountPoint);
+        
+        if (mountPoint.Equals(dataPath))
+            return _path = mountPointInfo;
 
         if (mountPointInfo.Exists)
         {
@@ -36,7 +36,7 @@ public class DataPathProvider : IDataPathProvider
             if (mountPointInfo.LinkTarget is dataPath)
             {
                 _logger.LogInformation("Symbolic link from {MountPoint} to {DataPath} already exists", mountPoint, dataPath);
-                return _path = mountPoint;
+                return _path = mountPointInfo;
             }
             
             throw new InvalidOperationException($"Symbolic link from {mountPoint} already exists but its not pointing to {dataPath}");
@@ -46,7 +46,7 @@ public class DataPathProvider : IDataPathProvider
         mountPointInfo.Parent?.Create();
         mountPointInfo.CreateAsSymbolicLink(dataPath);
 
-        return _path = mountPoint;
+        return _path = mountPointInfo;
     }
 
     private async Task<string> GetMountPointByDestination(string path)

@@ -49,10 +49,7 @@ public class DeployManager
 
     private async Task ExecuteInternal(CancellationToken cancellationToken)
     {
-        var dataPath = await _dataPathProvider.GetDataPath();
-        var repoDirectory = _fileSystem.DirectoryInfo.New(dataPath);
-        if(!repoDirectory.Exists)
-            repoDirectory.Create();
+        var repoDirectory = await _dataPathProvider.GetDataPath();
 
         if (!await _repository.Poll(cancellationToken))
         {
